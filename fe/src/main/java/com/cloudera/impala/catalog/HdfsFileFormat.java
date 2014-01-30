@@ -29,7 +29,8 @@ public enum HdfsFileFormat {
   LZO_TEXT,
   SEQUENCE_FILE,
   AVRO,
-  PARQUET;
+  PARQUET,
+  EXAMPLE_SCANNER_FILE;
 
   // Input format class for RCFile tables read by Hive.
   private static final String RCFILE_INPUT_FORMAT =
@@ -64,6 +65,11 @@ public enum HdfsFileFormat {
   private static final String AVRO_INPUT_FORMAT =
       "org.apache.hadoop.hive.ql.io.avro.AvroContainerInputFormat";
 
+  // Input format class for sample scanner.
+  private static final String EXAMPLE_SCANNER_FILE_INPUT_FORMAT =
+      "com.cloudera.impala.sample.ExampleScannerInputFormat";
+
+
   private static final Map<String, HdfsFileFormat> VALID_FORMATS =
       ImmutableMap.<String, HdfsFileFormat>builder()
           .put(RCFILE_INPUT_FORMAT, RC_FILE)
@@ -73,6 +79,7 @@ public enum HdfsFileFormat {
           .put(AVRO_INPUT_FORMAT, AVRO)
           .put(PARQUET_INPUT_FORMATS[0], PARQUET)
           .put(PARQUET_INPUT_FORMATS[1], PARQUET)
+          .put(EXAMPLE_SCANNER_FILE_INPUT_FORMAT, EXAMPLE_SCANNER_FILE)
           .build();
 
   /**
@@ -111,6 +118,7 @@ public enum HdfsFileFormat {
       case SEQUENCE_FILE: return HdfsFileFormat.SEQUENCE_FILE;
       case AVRO: return HdfsFileFormat.AVRO;
       case PARQUET: return HdfsFileFormat.PARQUET;
+      case EXAMPLE_SCANNER_FILE: return HdfsFileFormat.EXAMPLE_SCANNER_FILE;
       default:
         throw new RuntimeException("Unknown THdfsFileFormat: "
             + thriftFormat + " - should never happen!");
@@ -125,6 +133,7 @@ public enum HdfsFileFormat {
       case SEQUENCE_FILE: return THdfsFileFormat.SEQUENCE_FILE;
       case AVRO: return THdfsFileFormat.AVRO;
       case PARQUET: return THdfsFileFormat.PARQUET;
+      case EXAMPLE_SCANNER_FILE: return THdfsFileFormat.EXAMPLE_SCANNER_FILE;
       default:
         throw new RuntimeException("Unknown HdfsFormat: "
             + this + " - should never happen!");

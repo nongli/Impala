@@ -20,6 +20,7 @@
 #include "exec/hdfs-rcfile-scanner.h"
 #include "exec/hdfs-avro-scanner.h"
 #include "exec/hdfs-parquet-scanner.h"
+#include "exec/example-scanner.h"
 
 #include <sstream>
 #include <boost/algorithm/string.hpp>
@@ -260,6 +261,9 @@ HdfsScanner* HdfsScanNode::CreateScanner(HdfsPartitionDescriptor* partition) {
     case THdfsFileFormat::PARQUET:
       scanner = new HdfsParquetScanner(this, runtime_state_);
       break;
+    case THdfsFileFormat::EXAMPLE_SCANNER_FILE:
+      scanner = new ExampleScanner(this, runtime_state_);
+      break;
     default:
       DCHECK(false) << "Unknown Hdfs file format type:" << partition->file_format();
       return NULL;
@@ -442,6 +446,7 @@ Status HdfsScanNode::Prepare(RuntimeState* state) {
   RETURN_IF_ERROR(CreateConjunctsCopies(THdfsFileFormat::SEQUENCE_FILE));
   RETURN_IF_ERROR(CreateConjunctsCopies(THdfsFileFormat::AVRO));
   RETURN_IF_ERROR(CreateConjunctsCopies(THdfsFileFormat::PARQUET));
+  RETURN_IF_ERROR(CreateConjunctsCopies(THdfsFileFormat::EXAMPLE_SCANNER_FILE));
 
   num_conjuncts_copies_ = conjuncts_copies_.size();
 
@@ -541,6 +546,8 @@ Status HdfsScanNode::Open(RuntimeState* state) {
       per_type_files_[THdfsFileFormat::AVRO]));
   RETURN_IF_ERROR(HdfsParquetScanner::IssueInitialRanges(this,
         per_type_files_[THdfsFileFormat::PARQUET]));
+  RETURN_IF_ERROR(ExampleScanner::IssueInitialRanges(this,
+        per_type_files_[THdfsFileFormat::EXAMPLE_SCANNER_FILE]));
   if (!per_type_files_[THdfsFileFormat::LZO_TEXT].empty()) {
     // This will dlopen the lzo binary and can fail if it is not present
     RETURN_IF_ERROR(HdfsLzoTextScanner::IssueInitialRanges(state,

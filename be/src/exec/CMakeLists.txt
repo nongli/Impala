@@ -29,6 +29,7 @@ add_library(Exec STATIC
   cross-join-node.cc
   data-sink.cc
   delimited-text-parser.cc
+  example-scanner.cc
   exec-node.cc
   exchange-node.cc
   hash-join-node.cc

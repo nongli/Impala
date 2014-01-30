@@ -50,7 +50,8 @@ enum THdfsFileFormat {
   RC_FILE,
   SEQUENCE_FILE,
   AVRO,
-  PARQUET
+  PARQUET,
+  EXAMPLE_SCANNER_FILE,
 }
 
 enum THdfsCompression {
